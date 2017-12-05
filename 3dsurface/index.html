@@ -1,0 +1,220 @@
+<html>
+  <head>
+    <title>Manhattan Housing Price Models Based on Current Listings</title>
+    <style>
+html {
+  min-width: 1040px;
+}
+
+body {
+  font-family: proxima-nova, sans-serif;
+  margin: 1em auto 4em auto;
+  position: relative;
+  tab-size: 2;
+  width: 960px;
+}
+
+h1 {
+  font-size: 64px;
+  font-weight: 300;
+  letter-spacing: -2px;
+  margin: .3em 0 .1em 0;
+}
+
+h2 {
+  margin-top: 2em;
+}
+
+h1, h2 {
+  text-rendering: optimizeLegibility;
+}
+
+h2 a {
+  color: #ccc;
+  left: -20px;
+  position: absolute;
+  width: 740px;
+}
+
+.date {
+  color: #aaa;
+  margin-left: 1em;
+}
+
+footer {
+  margin-top: 3em;
+  /*margin-left: 0em;*/
+}
+
+aside {
+  font-size: small;
+  left: 780px;
+  position: absolute;
+  text-align: right;
+  width: 180px;
+}
+
+p {
+  line-height: 1.5em;
+  width: 720px;
+}
+
+blockquote {
+  width: 640px;
+}
+
+li {
+  width: 680px;
+}
+
+a {
+  color: steelblue;
+}
+
+a:not(:hover) {
+  text-decoration: none;
+}
+
+pre, code, textarea {
+  font-family: proxima-nova, sans-serif;
+  line-height: normal;
+}
+
+textarea {
+  font-size: 100%;
+}
+
+pre {
+  border-left: solid 2px #ccc;
+  padding-left: 18px;
+  margin: 2em 0 2em -20px;
+  width: 960px;
+  overflow-x: auto;
+}
+
+iframe {
+  width: 960px;
+  height: 500px;
+  border: 1px solid #DEDEDE;
+  margin-bottom: .5em;
+}
+
+
+.html .value,
+.javascript .string,
+.javascript .regexp {
+  color: #756bb1;
+}
+
+.html .tag,
+.css .tag,
+.javascript .keyword {
+  color: #3182bd;
+}
+
+aside,
+.comment {
+  color: #636363;
+}
+
+.html .doctype,
+.javascript .number {
+  color: #31a354;
+}
+
+.html .attribute,
+.css .attribute,
+.javascript .class,
+.javascript .special {
+  color: #e6550d;
+}
+
+
+header{
+margin-bottom: 2em;
+
+}
+
+footer {
+  color: #555;
+}
+
+a.gist {
+  color: #000;
+}
+
+
+  </style>
+  </head>
+
+<header>
+  <a href="../">blocks</a>
+</header>
+<h1>Manhattan Housing Price Models Based on Current Listings</h1>
+<h2>Kriging Model</h2>
+
+<iframe src="kriging.html" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+<p><aside><a style="position:relative;top:6px;left:0px;" href="kriging.html" target="_blank">Open in a new window</a></aside>
+<div class="gist-readme1"></div>
+<h2>Quadtree Model</h2>
+
+<iframe src="quadtree.html" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+<p><aside><a style="position:relative;top:6px;left:0px;" href="quadtree.html" target="_blank">Open in a new window</a></aside>
+<div class="gist-readme2"></div>
+<div class="gist-sources"></div>
+  <body>
+  	<script src="../files/d3.v3.min.js"></script>
+    <script src="../files/highlight.min.js"></script>
+    <script>
+
+
+
+var gist = {"files":{
+  "README1.md":{"language":"Markdown","type":"text/plain","filename":"README1.md"}, 
+  "README2.md":{"language":"Markdown","type":"text/plain","filename":"README2.md"}, 
+  "index.html":{"language":"HTML","type":"text/html","filename":"index.html"}
+}};
+
+var files = d3.values(gist.files);
+    // .sort(function(a, b) { return (b.filename === "index.html") - (a.filename === "index.html") || a.filename.localeCompare(b.filename); });
+
+console.log(files);
+var readme1 = d3.selectAll(".gist-readme1")
+    .data(files.filter(function(d) { 
+      return /^readme1\b/i.test(d.filename) && d.language === "Markdown" ; }))
+    .each(function(d) {
+      var readme = d3.select(this);
+      d3.text( d.filename, function(error, content) {
+        readme.html(new Showdown.converter().makeHtml(content));
+        readme.selectAll("code").each(function() { hljs.highlightBlock(this); });
+      });
+    });
+
+var readme2 = d3.selectAll(".gist-readme2")
+    .data(files.filter(function(d) { return /^readme2\b/i.test(d.filename) && d.language === "Markdown"  ; }))
+    .each(function(d) {
+      var readme = d3.select(this);
+      d3.text( d.filename, function(error, content) {
+        readme.html(new Showdown.converter().makeHtml(content));
+        readme.selectAll("code").each(function() { hljs.highlightBlock(this); });
+      });
+    });
+
+
+function text(type) {
+  return /(^text\/)|(^application\/(javascript|json)$)|(^image\/svg$)|(\+xml$)/.test(type);
+}
+
+  	</script>
+<h2>Discussion</h2>
+<p>We can see that the predications of these two models are very similar, both of them managed to preserve the information of the hotspots, and there are also some differences  deserve further discussion:</p>
+
+<p>For <b>Kriging Model</b>, the predicted value of any longitude and latitude pair is different, so it's easy to build a 3D model with beautiful smooth surface; the complexity is quadratic, and we need a lot of mathematic computations to set up the model, thus it's may not fit for real-time data modeling; other attributes can be included in the predication model using Kriging with External Drift (KED).<p>
+
+<p>For <b>Quadtree Model</b>, the predicted values are calculated based on recursive regions, so it's impossible to build a 3D model having smooth surface without additional efforts; the complexity is O(nlogn), and after we transform the longitude/latitude to UTM projection, it's possible to build real-time model at the frontend; the method to bring in other variables with price predication is not that straightfoward.<p>
+
+<footer>
+  <a href="../">blocks</a>
+</footer>
+  </body>
+</html>

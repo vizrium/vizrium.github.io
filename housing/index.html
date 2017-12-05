@@ -1,0 +1,184 @@
+<html>
+  <head>
+    <title>Manhattan Median Housing Prices 2006-2015</title>
+    <style>
+      body {
+
+        color: #000;
+        font-family:proxima-nova, sans-serif;
+        font-size:12px;
+        font-weight: bold;
+        background-color: #fff;
+        margin: 0px;
+        overflow: hidden;
+
+      }
+
+
+.legend{
+
+     position: absolute;
+    right: 38px;
+    bottom: 17px;
+    width: 150px;
+    height: 10px;
+    border : 1px solid #000;
+     background: -moz-linear-gradient( top ,
+        rgba(255, 0, 0, 1) 100%,
+        rgba(255, 255, 0, 1) 60%,
+        rgba(0, 255, 0, 1) 30%,
+        rgba(0, 255, 255, 1) 0%);
+    background: -webkit-gradient(linear,  left top,  right top, 
+        color-stop(100%, rgba(255, 0, 0, 1)), 
+        color-stop(60%, rgba(255, 255, 0, 1)),
+        color-stop(30%, rgba(0, 255, 0, 1)),
+        color-stop(0%, rgba(0, 255, 255, 1)));
+
+}
+
+#Start{
+
+ font-size:10px;
+        font-weight: normal;
+     position: absolute;
+    right: 175px;
+    bottom: 6px;
+    text-align: center;
+
+}
+
+#End{
+
+ font-size:10px;     
+        font-weight: normal;
+     position: absolute;
+    right: 11px;
+    bottom: 6px;
+    text-align: center;
+
+}
+
+#Title{
+
+ font-size:12px;     
+        font-weight: normal;
+     position: absolute;
+    right: 75px;
+    bottom: 60px;
+    text-align: center;
+
+}
+
+#Years{
+
+     position: absolute;
+    left: 195px;
+    bottom: -6px;
+    width: 300px;
+    height: 42px;
+
+}
+    .info {
+      background: none;
+      font-size:12px;     
+        font-weight: normal;
+    }
+
+#Current{
+
+ font-size:12px;
+        color: darkblue;
+        font-weight: bold;
+     position: absolute;
+    right: 225px;
+    bottom: 10px;
+    opacity: 0.9;
+text-align: center;
+
+}
+
+
+.axis .halo {
+  fill: none;
+  stroke: #ddd;
+  stroke-width: 6px;
+  stroke-linecap: round;
+}
+
+
+.slider .handle {
+  fill: #fff;
+  stroke: #000;
+  stroke-opacity: .5;
+  stroke-width: 1.25px;
+  cursor: crosshair;
+}
+
+ #indexmenu {
+          left: 10px;
+          position: absolute;
+          bottom: 7px;
+          font-size: 12px;
+        }
+/*
+.slider .handle {
+  fill: #fff;
+  stroke: #000;
+  stroke-opacity: .5;
+  stroke-width: 1.25px;
+  cursor: crosshair;
+}*/
+.buttonee button {
+  font-size: 12px;
+          left: 125px;
+          position: absolute;
+          bottom: 6px;
+          width: 60px;
+          cursor: pointer;
+          text-align: center;
+        }
+
+.slider .handle path {
+  stroke: white;
+  stroke-width: 3px;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+.slider .handle text {
+  fill: white;
+  text-align: center;
+}
+    </style>
+  </head>
+  <body>
+
+
+<script src="../files/Three.js"></script>
+<script src="../files/Detector.js"></script>
+<script src="../files/OrbitControls.js"></script>
+<script src="../files/THREEx.FullScreen.js"></script>
+<script src="../files/THREEx.WindowResize.js"></script>
+
+      <script src="../files/d3.v3.min.js"></script>
+       <script src="../files/Tween.js"></script>
+       <script src="../files/RequestAnimationFrame.js"></script>
+      <script src="../files/dat.gui.js"></script> 
+      <script src="../files/d3-threeD.js"></script>
+
+      <link type="text/css" rel="stylesheet" href="../files/dat-gui-swec.css"></link>
+
+<div id="ThreeJS" style="position: absolute; left:0px; top:0px">
+  
+  <div id = "Overlay" class = "legend"> </div>
+  <div id = "Years" class = "info"> </div>
+ <div id = "Start"> <span id = "Startvalue"></span>  </div>
+  <div id = "Title"> <span id = "Currenttitle"></span> </div>
+  <div id = "Current"> <span id = "Currentvalue" style = "text-align:middle"></span></div>
+ <div class = "buttonee" id="example98"> <button>Play</button> </div>
+  <div id = "End"> <span id = "Endvalue"></span></div>
+</div>
+<select id = "indexmenu"></select>
+    <script src="minn.js"></script>
+  </body>
+</html>

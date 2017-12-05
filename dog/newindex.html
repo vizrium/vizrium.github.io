@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<!-- saved from url=(0053)http://leafletjs.com/examples/choropleth-example.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>New York City Dog Map</title>
+	<meta charset="utf-8">
+
+<!--	<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+
+    <script type="text/javascript" src="../files/d3.v3.min.js"></script>
+    <script type="text/javascript" src="../files/d3.csv.js"></script>
+    <script type="text/javascript" src="../files/d3.geo.js"></script>
+<script src='../files/mapbox.js'></script>
+<link href='../files/mapbox.css' rel='stylesheet' />
+
+	<style>
+/*		#map {
+			width: 1200px;
+			height: 650px;
+		}*/
+		body {
+    padding: 0;
+    margin: 0;
+}
+html, body, #map {
+    height: 100%;
+}
+
+		.info {
+			padding: 6px 8px;
+			font: 12px/14px proxima-nova, sans-serif;
+			background: white;
+			width: 285px;
+			height : 283px;
+			overflow-x: hidden;
+			overflow-y: hidden;
+			background: rgba(255,255,255,0.8);
+			box-shadow: 0 0 15px rgba(0,0,0,0.2);
+			border-radius: 5px;
+		}
+
+		.innfo {
+			padding: 6px 8px;
+			font: 12px/14px proxima-nova, sans-serif;
+			background: white;
+			background: rgba(255,255,255,0.8);
+			box-shadow: 0 0 15px rgba(0,0,0,0.2);
+			border-radius: 5px;
+		}
+		.infoo {
+			padding: 6px 8px;
+			width: 235px;
+			height: 490px;
+			overflow-x: hidden;
+      		overflow-y: hidden;
+			font: 12px/14px proxima-nova, sans-serif;
+			background: white;
+			background: rgba(255,255,255,0.8);
+			box-shadow: 0 0 15px rgba(0,0,0,0.2);
+			border-radius: 5px;
+		}
+		.info h4 {
+			font-size: 14px;
+			margin: 0 0 0px;
+			color: #777;
+		}
+
+				.info h5 {
+			font-size: 12px;
+			margin: 0 0 3px;
+			color: #444;
+		}
+
+
+		.infoo h4 {
+			margin: 0 0 5px;
+			color: #777;
+		}
+		.legend {
+			font:  proxima-nova, sans-serif;
+			text-align: left;
+			line-height: 18px;
+			color: #555;
+		}
+		.legend i {
+			font: proxima-nova, sans-serif;
+			width: 18px;
+			height: 18px;
+			float: left;
+			margin-right: 8px;
+			opacity: 0.7;
+		}
+.infotext{
+	fill: #444;
+}
+
+.infotitle{
+	font: 14px proxima-nova, sans-serif;
+	font-weight: bold;
+			fill: #777;
+	
+}
+
+.infoti{
+	fill: #444;
+}
+.custom-popup .leaflet-popup-content-wrapper {
+  font: 12px/14px proxima-nova, sans-serif;
+  background:rgba(255,255,255,0.8);
+  color:black;
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  }
+
+.custom-popup .leaflet-popup-tip-container {
+
+    margin-bottom: 35px;
+  }
+
+.custom-popup .leaflet-popup-tip {
+  
+  border-top:10px solid rgba(255,255,255,0.8);
+  }
+
+.leaflet-control-layers-toggle:after{ 
+    content:"Layers"; 
+    color: rgba(255,255,255,0.8);
+    color:#000 ;
+    font: 12px proxima-nova, sans-serif;
+}
+.leaflet-control-layers-toggle{ 
+    width:52px;
+    padding: 8px 8px;
+    color:rgba(255,255,255,0.8);
+    
+
+			background: rgba(255,255,255,0.8);
+			box-shadow: 0 0 15px rgba(0,0,0,0.2);
+			border-radius: 5px;
+    text-decoration:none;
+    line-height:8px;
+
+}
+
+.leaflet-control-layers-expanded{
+font: 12px proxima-nova, sans-serif;
+	} 
+
+.leaflet-control-layers-list{
+font: 12px proxima-nova, sans-serif;	
+background: white;
+background: rgba(255,255,255,0.8);
+}
+
+.leaflet-popup-content img {
+  max-width:32%;
+  }
+
+	</style>
+</head>
+<body>
+<style>/*
+.filter-ui {
+  position:absolute;
+  top:10px;
+  bottom:10px;
+  left:10px;
+  z-index:100;
+  display: block;
+
+padding: 6px 8px;
+      font: 14px/16px proxima-nova, sans-serif;
+      background: white;
+      background: rgba(255,255,255,0.8);
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      border-radius: 5px;
+      overflow-x: hidden;
+      overflow-y: scroll;
+  }*/
+
+</style>
+
+<nav id='filters' class='filter-ui'></nav>
+
+
+	<div class="custom-popup" id="map"></div>
+
+	
+	<script type="text/javascript" src="nyzipcode.json"></script>
+	<script type="text/javascript" src="minnn.js"></script>
+
+
+</body></html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<title>US 20 Cities Housing Market Indicators 2000-2014</title>
+<meta charset="utf-8">
+<style> /* set the CSS */
+
+body { font: 12px proxima-nova, sans-serif;;}
+
+path { 
+    stroke-width: 2;
+    fill: none;
+}
+
+
+ #citymenu {
+          left: 170px;
+          position: absolute;
+          top: 10px;
+          font-size: 12px;
+        }
+
+ #indexmenu {
+          left: 40px;
+          position: absolute;
+          top: 10px;
+          font-size: 12px;
+        }
+
+
+.y.axis path {
+  display: none;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+
+</style>
+<body>
+
+
+<!-- load the d3.js library -->    
+ <select id = "citymenu"></select>
+ <select id = "indexmenu"></select>
+<script src="../files/d3.v3.min.js"></script>
+
+<script src="minn.js"></script>
+</body>

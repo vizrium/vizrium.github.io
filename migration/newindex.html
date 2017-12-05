@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+     <title>Migration Flows Between Top 50 MSAs 2012</title>
+    <style type="text/css">
+
+body {
+font-family: proxima-nova, sans-serif;
+}
+
+
+
+.map{
+
+            left:-280px;
+          position: absolute;
+          top:15px;
+}
+
+
+#states path {
+  
+}
+
+.text{
+  position: absolute;
+}
+.msa_names_column,
+
+  .mg_dropdown {
+    font-weight: 300;
+      color:black;
+      position: absolute;
+      margin: 0px;
+      padding: 0px;
+      font-size: 10px;
+    }
+
+
+
+path.arc {
+  pointer-events: none;
+  fill:none;
+  stroke-opacity: 0.5;
+}
+
+rect.mg_bar {
+      stroke: darkgray;
+      stroke-width: 1px;
+    }
+
+    
+    text.mg_bar {
+      font-size: 0.7em;
+    }
+    
+
+    </style>
+
+  </head>
+  <body>
+  
+    <div class = "map", id = 'div1'></div>
+  <select class="direction mg_dropdown" id="direction"></select>
+  <select class="type mg_dropdown" id="type"></select>
+  <select class="category mg_dropdown" id="category"></select>
+
+    <script type="text/javascript" src="../files/d3.v3.min.js"></script>
+
+    <script type="text/javascript" src="../files/d3.csv.js"></script>
+    <script type="text/javascript" src="../files/d3.geo.js"></script>
+    <script type="text/javascript" src="minn.js"></script>
+  </body>
+</html>
