@@ -1,0 +1,2106 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+  <head>
+     <title>Sale</title>
+<style>
+
+body{font:10px sans-serif}
+
+h1{font-size:25px}
+
+#charts{width:1300px;margin:auto;overflow:hidden}
+
+/*.chart rect{fill:#08519c;stroke:#08306b}*/
+
+.chart text{fill:#000;text-anchor:middle;}
+
+/*.bar{fill:#9ecae1}*/
+
+.voronoi{fill:white; fill-opacity:0;}
+
+.left{float:left;height:230px;margin-bottom:10px;width:30%;width:400px;max-width:400px;}
+
+.middle{float:left;height:230px;margin-bottom:10px;width:40%;width:500px;max-width:500px;}
+
+.right{float:left;height:230px;margin-bottom:10px;width:30%;width:400px;max-width:400px;}
+
+.bottom{width:100%;width:1300px;max-width:1300px;}
+
+.top.x.axis path {
+  display: none;
+}
+
+.sale.text {text-anchor:end;}
+
+.number{float:right;text-align:right;margin:10px 10px 0;font-size:15px;width:250px}
+
+.lnumber{float:right;text-align:right;margin:10px 10px 0;font-size:15px;width:900px}
+
+.title{margin:10px 0 0 10px;font-size:15px;width:450px}
+
+@media all and (max-width: 1200px){.left,.right{float:none;margin-bottom:5px}}
+
+.area{fill:#9ecae1;fill-opacity:0.5;}
+
+.c.line {stroke:#08306b; fill: none;
+  shape-rendering: crispEdges;}
+
+/*.context.area{fill:none;stroke:#000;stroke-width:1}*/
+
+/*.brush .extent{stroke:#4682b4;shape-rendering:crispEdges}*/
+
+.axis {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.arc text {
+  font: 10px sans-serif;
+  text-anchor: middle;
+}
+
+.arc path {
+  stroke: #fff;
+}
+</style>
+</head>
+<body>
+<div id="charts">
+	<h1>Sale</h1>
+	<div class="left chart" id="complete-chart">
+		<div class="number" id="complete-number"></div>
+		<div class="title">Sale Completeness</div>
+	</div>
+	<div class="middle chart" id="price-chart">
+		<div class="number" id="price-number"></div>
+		<div class="title">Lot Price Distribution</div>
+	</div>
+	<div class="right chart" id="estimate-chart">
+		<div class="number" id="estimate-number"></div>
+		<div class="title">Estimate Spread</div>
+	</div>
+	<div class="left chart" id="performance-chart">
+		<div class="number" id="performance-number"></div>
+		<div class="title">Performance VS Estimate</div>
+	</div>
+	<div class="middle chart" id="top-chart">
+		<div class="number" id="top-number"></div>
+		<div class="title">Top 3 Lots By Value</div>
+	</div>
+	<div class="right chart" id="sale-chart">
+		<div class="number" id="sale-number"></div>
+		<div class="title">Sale Summary</div>
+	</div>
+	<div class="left bottom chart" id="flow-chart">
+		<div class="lnumber" id="flow-number">Move Mouse on the Flow</div>
+		<div class="title">Auction Flow</div>
+	</div>
+</div>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<!-- <script src="https://raw.githubusercontent.com/gz475/gz475.github.io/master/collectrium/example_3.js"></script> -->
+
+<script>
+
+var data = [
+    {
+        "date": "2016-12-14", 
+        "currency": "GBP", 
+        "lots": [
+            {
+                "estimate_high": 25000.0, 
+                "lot_number": "3", 
+                "estimate_low": 15000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 25000.0, 
+                "lot_number": "4", 
+                "estimate_low": 15000.0, 
+                "price": 20000.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 12000.0, 
+                "lot_number": "5", 
+                "estimate_low": 8000.0, 
+                "price": 16250.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 30000.0, 
+                "lot_number": "6", 
+                "estimate_low": 20000.0, 
+                "price": 75000.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 15000.0, 
+                "lot_number": "17", 
+                "estimate_low": 10000.0, 
+                "price": 27500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 5000.0, 
+                "lot_number": "24", 
+                "estimate_low": 3000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 60000.0, 
+                "lot_number": "26", 
+                "estimate_low": 40000.0, 
+                "price": 43750.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 120000.0, 
+                "lot_number": "30", 
+                "estimate_low": 80000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 15000.0, 
+                "lot_number": "31", 
+                "estimate_low": 10000.0, 
+                "price": 40000.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 30000.0, 
+                "lot_number": "32", 
+                "estimate_low": 20000.0, 
+                "price": 18750.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 35000.0, 
+                "lot_number": "33", 
+                "estimate_low": 25000.0, 
+                "price": 56250.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 18000.0, 
+                "lot_number": "34", 
+                "estimate_low": 12000.0, 
+                "price": 22500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 15000.0, 
+                "lot_number": "35", 
+                "estimate_low": 10000.0, 
+                "price": 10000.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 50000.0, 
+                "lot_number": "36", 
+                "estimate_low": 30000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 15000.0, 
+                "lot_number": "37", 
+                "estimate_low": 10000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 80000.0, 
+                "lot_number": "38", 
+                "estimate_low": 50000.0, 
+                "price": 125000.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 250000.0, 
+                "lot_number": "39", 
+                "estimate_low": 150000.0, 
+                "price": 173000.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 150000.0, 
+                "lot_number": "40", 
+                "estimate_low": 100000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 70000.0, 
+                "lot_number": "42", 
+                "estimate_low": 50000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 25000.0, 
+                "lot_number": "43", 
+                "estimate_low": 18000.0, 
+                "price": 22500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 12000.0, 
+                "lot_number": "44", 
+                "estimate_low": 8000.0, 
+                "price": 8750.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 100000.0, 
+                "lot_number": "45", 
+                "estimate_low": 70000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 15000.0, 
+                "lot_number": "46", 
+                "estimate_low": 10000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 5000.0, 
+                "lot_number": "47", 
+                "estimate_low": 3000.0, 
+                "price": 3750.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 25000.0, 
+                "lot_number": "48", 
+                "estimate_low": 15000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 15000.0, 
+                "lot_number": "49", 
+                "estimate_low": 10000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 10000.0, 
+                "lot_number": "50", 
+                "estimate_low": 5000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 3000.0, 
+                "lot_number": "51", 
+                "estimate_low": 2000.0, 
+                "price": 8750.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 15000.0, 
+                "lot_number": "52", 
+                "estimate_low": 10000.0, 
+                "price": 32500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 18000.0, 
+                "lot_number": "53", 
+                "estimate_low": 12000.0, 
+                "price": 43750.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 50000.0, 
+                "lot_number": "54", 
+                "estimate_low": 30000.0, 
+                "price": 36250.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 180000.0, 
+                "lot_number": "55", 
+                "estimate_low": 120000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 60000.0, 
+                "lot_number": "56", 
+                "estimate_low": 40000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 50000.0, 
+                "lot_number": "57", 
+                "estimate_low": 30000.0, 
+                "price": 112500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 15000.0, 
+                "lot_number": "58", 
+                "estimate_low": 10000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 30000.0, 
+                "lot_number": "59", 
+                "estimate_low": 20000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 150000.0, 
+                "lot_number": "60", 
+                "estimate_low": 100000.0, 
+                "price": 137000.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 8000.0, 
+                "lot_number": "61", 
+                "estimate_low": 5000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 10000.0, 
+                "lot_number": "62", 
+                "estimate_low": 7000.0, 
+                "price": 8750.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 10000.0, 
+                "lot_number": "63", 
+                "estimate_low": 7000.0, 
+                "price": 8750.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 30000.0, 
+                "lot_number": "64", 
+                "estimate_low": 20000.0, 
+                "price": 25000.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 12000.0, 
+                "lot_number": "65", 
+                "estimate_low": 8000.0, 
+                "price": 9375.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 20000.0, 
+                "lot_number": "66", 
+                "estimate_low": 15000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 50000.0, 
+                "lot_number": "67", 
+                "estimate_low": 30000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 12000.0, 
+                "lot_number": "68", 
+                "estimate_low": 8000.0, 
+                "price": 11250.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 15000.0, 
+                "lot_number": "69", 
+                "estimate_low": 10000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 18000.0, 
+                "lot_number": "70", 
+                "estimate_low": 12000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 150000.0, 
+                "lot_number": "71", 
+                "estimate_low": 100000.0, 
+                "price": 112500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 100000.0, 
+                "lot_number": "72", 
+                "estimate_low": 70000.0, 
+                "price": 81250.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 150000.0, 
+                "lot_number": "73", 
+                "estimate_low": 100000.0, 
+                "price": 185000.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 60000.0, 
+                "lot_number": "74", 
+                "estimate_low": 40000.0, 
+                "price": 77500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 15000.0, 
+                "lot_number": "75", 
+                "estimate_low": 10000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 25000.0, 
+                "lot_number": "76", 
+                "estimate_low": 18000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 10000.0, 
+                "lot_number": "77", 
+                "estimate_low": 7000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 10000.0, 
+                "lot_number": "78", 
+                "estimate_low": 6000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 25000.0, 
+                "lot_number": "79", 
+                "estimate_low": 15000.0, 
+                "price": 18750.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 7000.0, 
+                "lot_number": "81", 
+                "estimate_low": 5000.0, 
+                "price": 6250.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 6000.0, 
+                "lot_number": "82", 
+                "estimate_low": 4000.0, 
+                "price": 5000.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 25000.0, 
+                "lot_number": "84", 
+                "estimate_low": 18000.0, 
+                "price": 15000.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 20000.0, 
+                "lot_number": "87", 
+                "estimate_low": 15000.0, 
+                "price": 12500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 35000.0, 
+                "lot_number": "88", 
+                "estimate_low": 25000.0, 
+                "price": 43750.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 10000.0, 
+                "lot_number": "108", 
+                "estimate_low": 7000.0, 
+                "price": 7500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 8000.0, 
+                "lot_number": "109", 
+                "estimate_low": 5000.0, 
+                "price": 6250.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 35000.0, 
+                "lot_number": "110", 
+                "estimate_low": 25000.0, 
+                "price": 55000.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 18000.0, 
+                "lot_number": "1", 
+                "estimate_low": 12000.0, 
+                "price": 27500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 40000.0, 
+                "lot_number": "2", 
+                "estimate_low": 25000.0, 
+                "price": 31250.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 50000.0, 
+                "lot_number": "8", 
+                "estimate_low": 30000.0, 
+                "price": 112500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 10000.0, 
+                "lot_number": "9", 
+                "estimate_low": 7000.0, 
+                "price": 7500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 10000.0, 
+                "lot_number": "10", 
+                "estimate_low": 6000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 60000.0, 
+                "lot_number": "11", 
+                "estimate_low": 40000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 5000.0, 
+                "lot_number": "12", 
+                "estimate_low": 3000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 5000.0, 
+                "lot_number": "13", 
+                "estimate_low": 3000.0, 
+                "price": 3250.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 12000.0, 
+                "lot_number": "14", 
+                "estimate_low": 8000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 50000.0, 
+                "lot_number": "15", 
+                "estimate_low": 30000.0, 
+                "price": 33750.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 35000.0, 
+                "lot_number": "16", 
+                "estimate_low": 25000.0, 
+                "price": 22500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 30000.0, 
+                "lot_number": "18", 
+                "estimate_low": 20000.0, 
+                "price": 50000.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 15000.0, 
+                "lot_number": "19", 
+                "estimate_low": 10000.0, 
+                "price": 22500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 8000.0, 
+                "lot_number": "20", 
+                "estimate_low": 6000.0, 
+                "price": 6250.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 4500.0, 
+                "lot_number": "21", 
+                "estimate_low": 3500.0, 
+                "price": 9375.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 8000.0, 
+                "lot_number": "22", 
+                "estimate_low": 5000.0, 
+                "price": 13750.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 8000.0, 
+                "lot_number": "23", 
+                "estimate_low": 6000.0, 
+                "price": 6250.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 200000.0, 
+                "lot_number": "25", 
+                "estimate_low": 150000.0, 
+                "price": 173000.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 12000.0, 
+                "lot_number": "27", 
+                "estimate_low": 8000.0, 
+                "price": 8750.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 8000.0, 
+                "lot_number": "28", 
+                "estimate_low": 5000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 15000.0, 
+                "lot_number": "29", 
+                "estimate_low": 10000.0, 
+                "price": 10000.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 35000.0, 
+                "lot_number": "41", 
+                "estimate_low": 25000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 7000.0, 
+                "lot_number": "80", 
+                "estimate_low": 5000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 30000.0, 
+                "lot_number": "83", 
+                "estimate_low": 20000.0, 
+                "price": 22500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 18000.0, 
+                "lot_number": "85", 
+                "estimate_low": 12000.0, 
+                "price": 32500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 50000.0, 
+                "lot_number": "86", 
+                "estimate_low": 30000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 30000.0, 
+                "lot_number": "89", 
+                "estimate_low": 20000.0, 
+                "price": 20000.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 3000.0, 
+                "lot_number": "90", 
+                "estimate_low": 2000.0, 
+                "price": 2250.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 5000.0, 
+                "lot_number": "91", 
+                "estimate_low": 3000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 3500.0, 
+                "lot_number": "92", 
+                "estimate_low": 2500.0, 
+                "price": 3750.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 1800.0, 
+                "lot_number": "93", 
+                "estimate_low": 1200.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 50000.0, 
+                "lot_number": "94", 
+                "estimate_low": 30000.0, 
+                "price": 56250.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 12000.0, 
+                "lot_number": "95", 
+                "estimate_low": 8000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 80000.0, 
+                "lot_number": "96", 
+                "estimate_low": 60000.0, 
+                "price": 68750.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 5000.0, 
+                "lot_number": "97", 
+                "estimate_low": 3000.0, 
+                "price": 6000.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 6000.0, 
+                "lot_number": "98", 
+                "estimate_low": 4000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 20000.0, 
+                "lot_number": "100", 
+                "estimate_low": 15000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 18000.0, 
+                "lot_number": "101", 
+                "estimate_low": 12000.0, 
+                "price": 12500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 18000.0, 
+                "lot_number": "102", 
+                "estimate_low": 12000.0, 
+                "price": 12500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 20000.0, 
+                "lot_number": "103", 
+                "estimate_low": 15000.0, 
+                "price": 21250.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 50000.0, 
+                "lot_number": "104", 
+                "estimate_low": 30000.0, 
+                "price": "", 
+                "status": "Unsold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 30000.0, 
+                "lot_number": "105", 
+                "estimate_low": 20000.0, 
+                "price": 42500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 30000.0, 
+                "lot_number": "106", 
+                "estimate_low": 20000.0, 
+                "price": 32500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }, 
+            {
+                "estimate_high": 15000.0, 
+                "lot_number": "107", 
+                "estimate_low": 10000.0, 
+                "price": 22500.0, 
+                "status": "Sold", 
+                "image": true, 
+                "approved": true
+            }
+        ], 
+        "name": "Victorian, Pre Raphaelite and British Impressionist Art", 
+        "location": "London"
+    }
+]
+
+var height = 230, width = 400, mwidth = 500, bwidth = 1300;
+var pcolor = ['#08519c', '#3182bd', '#6baed6', '#9ecae1', '#c6dbef'];
+
+var complete_svg = d3.select("#complete-chart").append("svg")
+    	.attr("width", width)
+    	.attr("height", height);
+
+var performance_svg = d3.select("#performance-chart").append("svg")
+    	.attr("width", width)
+    	.attr("height", height);
+
+var flow_svg = d3.select("#flow-chart").append("svg")
+    	.attr("width", bwidth)
+    	.attr("height", height);
+
+var top_svg = d3.select("#top-chart").append("svg")
+      .attr("width", mwidth)
+      .attr("height", height);
+
+var price_svg = d3.select("#price-chart").append("svg")
+      .attr("width", mwidth)
+      .attr("height", height);
+
+var estimate_svg = d3.select("#estimate-chart").append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+var sale_svg = d3.select("#sale-chart").append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+var flow_text = d3.select("#flow-number");
+
+var gradient = complete_svg.append("defs")
+  .append("linearGradient")
+    .attr("id", "gradient")
+    .attr("x1", "100%")
+    .attr("y1", "0%")
+    .attr("x2", "100%")
+    .attr("y2", "100%")
+    .attr("spreadMethod", "pad");
+
+    gradient.append("svg:stop")
+    .attr("offset", "0%")
+    .attr("stop-color", "#9ecae1")
+    .attr("stop-opacity", 1);
+
+    gradient.append("svg:stop")
+    .attr("offset", "100%")
+    .attr("stop-color", "#08306b")
+    .attr("stop-opacity", 1);
+
+var igradient = complete_svg.append("defs")
+  .append("linearGradient")
+    .attr("id", "igradient")
+    .attr("x1", "100%")
+    .attr("y1", "100%")
+    .attr("x2", "100%")
+    .attr("y2", "0%")
+    .attr("spreadMethod", "pad");
+
+    igradient.append("svg:stop")
+    .attr("offset", "0%")
+    .attr("stop-color", "#fc9272")
+    .attr("stop-opacity", 1);
+
+    igradient.append("svg:stop")
+    .attr("offset", "100%")
+    .attr("stop-color", "#67000d")
+    .attr("stop-opacity", 1);
+
+var complete_margin = {top: 5, right: 5, bottom: 5, left: 5},
+    	complete_width = width - complete_margin.left - complete_margin.right,
+    	complete_height = height - complete_margin.top - complete_margin.bottom;
+
+var performance_margin = {top: 5, right: 5, bottom: 5, left: 5},
+    	performance_width = width - performance_margin.left - performance_margin.right,
+    	performance_height = height - performance_margin.top - performance_margin.bottom;
+
+var flow_margin = {top: 10, right: 10, bottom: 40, left: 80},
+    	flow_width = bwidth - flow_margin.left - flow_margin.right,
+    	flow_height = height - flow_margin.top - flow_margin.bottom;
+
+var top_margin = {top: 20, right: 5, bottom: 30, left: 70},
+      top_width = mwidth - top_margin.left - top_margin.right,
+      top_height = height - top_margin.top - top_margin.bottom;
+
+var price_margin = {top: 20, right: 5, bottom: 30, left: 50},
+      price_width = mwidth - price_margin.left - price_margin.right,
+      price_height = height - price_margin.top - price_margin.bottom;
+
+var estimate_margin = {top: 20, right: 20, bottom: 30, left: 80},
+      estimate_width = width - estimate_margin.left - estimate_margin.right,
+      estimate_height = height - estimate_margin.top - estimate_margin.bottom;
+
+var sale_margin = {top: 20, right: 20, bottom: 30, left: 80},
+      sale_width = width - sale_margin.left - sale_margin.right,
+      sale_height = height - sale_margin.top - sale_margin.bottom;
+
+var complete_focus = complete_svg.append("g")
+    	.attr("transform", "translate(" + complete_margin.left + "," + complete_margin.top + ")");
+
+var performance_focus = performance_svg.append("g")
+    	.attr("transform", "translate(" + performance_margin.left + "," + performance_margin.top + ")");
+
+var flow_focus = flow_svg.append("g")
+    	.attr("transform", "translate(" + flow_margin.left + "," + flow_margin.top + ")");
+
+var top_focus = top_svg.append("g")
+      .attr("transform", "translate(" + top_margin.left + "," + top_margin.top + ")");
+
+var price_focus = price_svg.append("g")
+      .attr("transform", "translate(" + price_margin.left + "," + price_margin.top + ")");
+
+var estimate_focus = estimate_svg.append("g")
+      .attr("transform", "translate(" + estimate_margin.left + "," + estimate_margin.top + ")");
+
+var sale_focus = sale_svg.append("g")
+      .attr("transform", "translate(" + sale_margin.left + "," + sale_margin.top + ")");
+
+
+var flow_x = d3.scale.linear().range([0, flow_width]),
+    flow_y = d3.scale.linear().range([flow_height, 0]);
+
+var price_x = d3.scale.linear().range([0, price_width]),
+    price_y = d3.scale.linear().range([price_height, 0]);
+
+var flow_xAxis = d3.svg.axis().scale(flow_x).orient("bottom"),
+    flow_yAxis = d3.svg.axis().scale(flow_y).orient("left").ticks(3);
+
+var price_xAxis = d3.svg.axis().scale(price_x).orient("bottom"),
+    price_yAxis = d3.svg.axis().scale(price_y).orient("left").ticks(3);
+
+var estimate_x = d3.scale.linear().range([0, estimate_width]),
+    estimate_y = d3.scale.linear().range([estimate_height, 0]);
+
+var estimate_xAxis = d3.svg.axis().scale(estimate_x).orient("bottom").ticks(3),
+    estimate_yAxis = d3.svg.axis().scale(estimate_y).orient("left");
+
+var sale_x = d3.scale.linear().range([0, sale_width]),
+    sale_y = d3.scale.linear().range([sale_height, 0]);
+
+var sale_xAxis = d3.svg.axis().scale(sale_x).orient("bottom").ticks(3),
+    sale_yAxis = d3.svg.axis().scale(sale_y).orient("left");
+
+
+var top_x = d3.scale.ordinal()
+      .rangeRoundBands([0, top_width], .1);
+var top_y = d3.scale.linear()
+      .range([top_height, 0]);
+
+var top_xAxis = d3.svg.axis()
+      .scale(top_x)
+      .orient("bottom");
+
+var top_yAxis = d3.svg.axis()
+      .scale(top_y)
+      .orient("left").ticks(3);
+
+var price_x = d3.scale.ordinal()
+      .rangeRoundBands([0, price_width], .1);
+var price_y = d3.scale.linear()
+      .range([price_height, 0]);
+
+var price_xAxis = d3.svg.axis()
+      .scale(price_x)
+      .orient("bottom");
+
+var price_yAxis = d3.svg.axis()
+      .scale(price_y)
+      .orient("left").ticks(3);
+
+var flow_area = d3.svg.area()
+    .interpolate("monotone")
+    .x0(function(d) { return flow_x(d.number); })
+    .x1(function(d) { return flow_x(d.number); })
+    .y0(function(d) { return flow_y(d.estimate_high); })
+    .y1(function(d) { return flow_y(d.estimate_low); });
+
+var oflow_area = d3.svg.area()
+    .interpolate("monotone")
+    .x0(function(d) { return flow_x(d.number); })
+    .x1(function(d) { return flow_x(d.number); })
+    .y0(function(d) { return flow_y(0); })
+    .y1(function(d) { return flow_y(0); });
+
+var flow_line  = d3.svg.line()
+    .interpolate("monotone")
+    .x(function(d) { return flow_x(d.number); })
+    .y(function(d) { return flow_y(d.value); });
+
+var y_line = d3.svg.line()
+    .interpolate("monotone")
+    .x(function(d) { return flow_x(d.number); })
+    .y(function(d) { return flow_y(d.value); });
+
+var complete = complete_focus.append('svg');
+
+var pi = Math.PI;
+    
+var aarc = d3.svg.arc()
+    .innerRadius(height/2.8)
+    .outerRadius(height/2.5 + 12)
+    .startAngle(-pi/2) 
+    .endAngle(pi/2); 
+
+var iarc = d3.svg.arc()
+    .innerRadius(height/2.8)
+    .outerRadius(height/2.5 + 12)
+    .startAngle(-pi/2) 
+    .endAngle(-3*pi/2); 
+    
+complete.append("path")
+    .attr("d", aarc)
+    .attr('fill', '#d9d9d9')
+    .attr("transform", "translate(" + (width/2) + "," + (height/2 - 10) + ")");
+
+complete.append("path")
+    .attr("d", iarc)
+    .attr('fill', '#d9d9d9')
+    .attr("transform", "translate(" + (width/2) + "," + (height - 120)+ ")");
+
+
+
+// d3.json("nn-sale-data.json", function(data) {
+	
+  // console.log(data);
+	var sale_data = data[0],
+		sale_location = sale_data['location'],
+		sale_date = sale_data['date'],
+		sale_currency = sale_data['currency'],
+		sale_name = sale_data['name'],
+		lots = sale_data['lots']
+		p_max = 0;
+
+	d3.select('#charts').select('h1').html(sale_name + ', ' + sale_location + ', ' + sale_date);
+
+
+	for (var i = 0; i < lots.length; i++) {
+		lots[i]['number'] = i+1;
+		if(lots[i]['price'] == "" ){ lots[i]['price'] = 0}
+		if(lots[i]['estimate_high'] == "" ){ lots[i]['estimate_high'] = 0}
+		if(lots[i]['estimate_low'] == "" ){ lots[i]['estimate_low'] = 0}
+
+				p_max = Math.max.apply(Math,[lots[i]['estimate_high'], lots[i]['price'], p_max]);
+	};
+
+lots.sort(function(a, b) {
+    return parseFloat(a.number) - parseFloat(b.number);
+});
+
+var sale_res = getSale(lots);
+
+var aend = pi *sale_res[0]['value']/parseFloat(lots.length) - pi/2;
+var iend = -pi *sale_res[1]['value']/parseFloat(lots.length) - pi/2;
+
+
+var aarct = d3.svg.arc()
+    .innerRadius(height/2.8)
+    .outerRadius(height/2.5 + 12)
+    .startAngle(-pi/2) 
+    .endAngle(aend); 
+
+var iarct = d3.svg.arc()
+    .innerRadius(height/2.8)
+    .outerRadius(height/2.5 + 12)
+    .startAngle(-pi/2) 
+    .endAngle(iend); 
+
+complete.append("path")
+    .attr("d", aarct)
+         .on('mouseover', function(d){
+      complete_number.transition().style("fill", "#08306b").text( parseInt(sale_res[0]['value']));
+      complete_text.transition().style("fill", "#08306b").text("Approved");
+  
+      })
+            .on('mouseout', function(d){
+      complete_number.transition().text(lots.length).style("fill", "#000000");
+      complete_text.transition().text('Lots').style("fill", "#000000");
+      })  
+    .attr('fill', "url(#gradient)")
+    .attr("transform", "translate(" + (width/2) + "," + (height/2 - 10) + ")")
+    .attr("stroke", '#ffffff');
+
+complete.append("path")
+    .attr("d", iarct)
+         .on('mouseover', function(d){
+                    complete_number.transition().style("fill", "#67000d").text( parseInt(sale_res[1]['value']));
+      complete_text.transition().style("fill", "#67000d").text("Imaged");
+
+      })
+            .on('mouseout', function(d){
+      complete_number.transition().text(lots.length).style("fill", "#000000");
+      complete_text.transition().text('Lots').style("fill", "#000000");
+      })  
+    .attr('fill', "url(#igradient)")
+    .attr("transform", "translate(" + (width/2) + "," + (height - 120) + ")")
+	.attr("stroke", '#ffffff');
+
+var complete_number = complete.append("text")
+      .attr("y", height/2)
+      .attr("x", width/2)
+      .style("text-anchor", "middle")
+      .style("font-size", "60px")
+      .style("stroke-width", '1px')
+      .text(lots.length);
+
+var complete_text = complete.append("text")
+      .attr("y", height/2 + 30)
+      .attr("x", width/2)
+      .style("text-anchor", "middle")
+      .style("font-size", "15px")
+      .style("stroke-width", '1px')
+      .text('Lots');
+
+
+	var performance_res = getPerformance(lots);
+
+		for (var i = 0, len = performance_res.length; i < len; i++) {
+  		performance_res[i]['value'] = performance_res[i]['value']/parseFloat(lots.length);
+	}
+
+
+var parct = d3.svg.arc()
+    .innerRadius(height/2.8)
+    .outerRadius(height/2.5 + 12);
+
+var pie = d3.layout.pie()
+    .sort(null)
+    .value(function(d) { return d.value; });
+
+
+var performance = performance_focus.append('svg');
+  var p_pie = performance.selectAll(".arc")
+      .data(pie(performance_res))
+    .enter().append("g")
+      .attr("class", "arc");
+
+  p_pie.append("path")
+      .attr("d", parct)
+      .style("fill", function(d, i) { return pcolor[i]; })
+      .on('mouseover', function(d, i){
+	performance_number.transition().text(parseInt(performance_res[i]['value'] * 100) + '%').style('fill', pcolor[i]); 
+	     	performance_text.transition().text(performance_res[i]['status']).style('fill', pcolor[i]);
+	      })
+      .on('mouseout', function(d, i){
+      	performance_number.transition().text(parseInt((1 - performance_res[4]['value']) * 100) + '%').style('fill', '#000000'); 
+	     	performance_text.transition().text('Sold').style('fill', '#000000');	
+      })
+    .attr("transform", "translate(" + (width/2) + "," + (height - 126) + ")");
+
+
+var performance_number = performance.append("text")
+      .attr("y", height/2)
+      .attr("x", width/2)
+      .style("text-anchor", "middle")
+      .style("font-size", "60px")
+      .style("stroke-width", '1px')
+      .text(parseInt((1 - performance_res[4]['value']) * 100) + '%');
+
+var performance_text = performance.append("text")
+      .attr("y", height/2 + 30)
+      .attr("x", width/2)
+      .style("text-anchor", "middle")
+      .style("font-size", "15px")
+      .style("stroke-width", '1px')
+      .text('Sold');
+
+
+flow_x.domain([1, lots.length]);
+flow_y.domain([0, p_max]);
+ 
+  flow_focus.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + flow_height + ")")
+      .style("font-size", "10")
+      .call(flow_xAxis);
+
+  flow_focus.append("g")
+      .attr("class", "y axis")
+      .style("font-size", "10")
+      .call(flow_yAxis);
+
+flow_focus.selectAll(".area")
+  .data(lots).enter().append("path")
+      .attr("class", function(d, i){return "c area"})
+      .attr("d", function(d, i){ 
+      	return flow_area(lots)});
+
+   var circles = flow_focus.selectAll(".circle")
+      .data(lots).enter().append("circle")
+      .attr('class', function(d, i){ return  'point p' + lots[i]['lot_number']})
+      .attr("cx", function(d, i){return flow_x(lots[i]['number'])})
+      .attr("cy", function(d, i){return flow_y(lots[i]['price'])})
+      .attr("r", 1)
+      .style("fill", "none")
+      .style("stroke", function(d, i){ if (d.image){ return "#a50f15"}
+        else{ return "#fc9272" }})
+      .style("stroke-width", 1)
+
+
+var voronoi = d3.geom.voronoi()
+.x(function(d) { return flow_x(d.number);})
+.y(function(d) { return flow_y(0);})
+.clipExtent([
+  [-flow_margin.left, -flow_margin.top],
+  [flow_width + flow_margin.right, flow_height + 7 + flow_margin.bottom]
+]);
+
+var voronoiGroup = flow_focus.append("g").attr("class", "voronoi");
+
+  voronoiGroup.selectAll("path")
+  .data(voronoi(lots.filter(function(d) {
+    return d.number >= flow_x.domain()[0] & d.number <= flow_x.domain()[1];
+  })))
+  .enter().append("path")
+  .attr("d", function(d) { return "M" + d.join("L") + "Z";})
+  .datum(function(d) { return d.point;})
+.attr("class", "voronoiCells")
+.on("mouseover", function(d, i){
+
+    flow_focus.append("path")
+      .attr("class", "x line")
+      .attr('stroke', '#08306b')
+      .attr("d", function(){
+  return y_line([{'number':d.number, 'value':d.estimate_high}, {'number':d.number, 'value': d.estimate_low}]);
+      });
+
+
+  if(d.approved){
+  d3.selectAll(".point").filter('.p' + d.lot_number).transition().style("stroke", "#08306b");
+}else{
+  d3.selectAll(".point").filter('.p' + d.lot_number).transition().style("stroke", "#9ecae1");
+}
+
+ estimate_value = [
+  {"start":s_lows[0]['number'], "end":s_lows[s_lows.length -1]['number'], "rank":2, "text":"Low Estimate", "ocolor":"#fc9272", "median": d.estimate_low, "lcolor":"#6baed6"}, 
+  {"start":s_highs[0]['number'], "end":s_highs[s_highs.length -1]['number'], "rank":1, "text":"High Estimate", "ocolor":"#fb6a4a", "median": d.estimate_high, "lcolor":"#3182bd"},
+  {"start":s_prices[0]['number'], "end":s_prices[s_prices.length - 1]['number'], "rank":0, "text":"Price", "ocolor":"#de2d26", "median": d.price, "lcolor":"#08519c"}
+  ];
+
+estimate_median.data(estimate_value).transition().attr("x1",  function(d, i) { 
+        return estimate_x(d.median); })
+            .attr("x2",  function(d, i) { return estimate_x(d.median); })
+
+        .attr("y1", function(d, i) { return estimate_y(d.rank + 1); })
+      .attr("y2", function(d, i){ 
+        return estimate_y(d.rank + 1) + 30; });
+
+
+
+    flow_text.transition().text('Lot Number: ' + d.lot_number 
+      + (d.estimate_low != 0 ? ' Low Estimate: ' + toCommas(d.estimate_low) : '') +  (d.estimate_low != 0 ? ' High Estimate: ' + toCommas(d.estimate_high) : '') + ( d.price != 0 ? ' Price: ' + toCommas(d.price) : ' Unsold'));
+})
+.on("mouseout", function(d) { 
+
+    d3.selectAll(".x.line").remove();
+     if(d.image){d3.selectAll(".point").filter('.p' + d.lot_number).transition().style("stroke", "#a50f15");}
+      else{
+  d3.selectAll(".point").filter('.p' + d.lot_number).transition().style("stroke", "#fc9272");}
+ // flow_text.transition().text();
+ flow_text.transition().text("Move Mouse on the Flow");
+
+
+ estimate_value = [
+  {"start":s_lows[0]['number'], "end":s_lows[s_lows.length -1]['number'], "rank":2, "text":"Low Estimate", "ocolor":"#fc9272", "median": l_med, "lcolor":"#6baed6"}, 
+  {"start":s_highs[0]['number'], "end":s_highs[s_highs.length -1]['number'], "rank":1, "text":"High Estimate", "ocolor":"#fb6a4a", "median": h_med, "lcolor":"#3182bd"},
+  {"start":s_prices[0]['number'], "end":s_prices[s_prices.length - 1]['number'], "rank":0, "text":"Price", "ocolor":"#de2d26", "median": p_med, "lcolor":"#08519c"}
+  ];
+
+  estimate_median.data(estimate_value).transition().attr("x1",  function(d, i) { 
+        return estimate_x(d.median); })
+            .attr("x2",  function(d, i) { return estimate_x(d.median); })
+
+        .attr("y1", function(d, i) { return estimate_y(d.rank + 1); })
+      .attr("y2", function(d, i){ 
+        return estimate_y(d.rank + 1) + 30; });
+
+});
+
+
+
+lots.sort(function(a, b) {
+    return parseFloat(b.price) - parseFloat(a.price);
+});
+
+var tops = lots.slice(0, 3);
+tops.sort(function(a, b) {
+    return parseFloat(a.price) - parseFloat(b.price);
+});
+
+  top_x.domain(tops.map(function(d) { return d.lot_number; }));
+  top_y.domain([0, d3.max(tops, function(d) { return d.price; })]);
+
+
+
+  var top_bar = top_focus.selectAll("bar")
+      .data(tops)
+    .enter().append("rect")
+      .attr("x",  function(d) {return top_x(d.lot_number)})
+        .attr("y", function(d, i) { 
+          return top_y(d.price) })
+      .attr("width",  top_x.rangeBand())
+      .style("fill", function(d, i){return pcolor[ pcolor.length - 3 - i]})
+     .attr("height", function(d) { return top_height - top_y(d.price)})
+              .on('mouseover', function(d){
+      })
+              .on('mouseout', function(d){
+
+      });
+
+
+  top_focus.append("g")
+      .attr("class", "top x axis")
+      .attr("transform", "translate(0," + top_height + ")")
+      .call(top_xAxis);
+
+
+  top_focus.append("g")
+      .attr("class", "y axis")
+      .call(top_yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("");
+
+
+var res = getPrices(lots)
+var prices = [];
+
+// var bins = [];
+// console.log(res);
+
+
+// for(i = 0; i < res.length; i++){
+//   bins.push(res[i].x);
+// }
+
+// console.log(bins);
+
+
+
+
+
+
+
+for(i = 0; i < res.length; i++){
+  
+  var element = {};
+  if(i == 0){
+  element['label'] = '<' + String(parseInt(res[i].x + res[i].dx/1000)) + 'k';
+  }
+  else if( i == res.length - 1){
+    element['label'] = '>' + String(parseInt(res[i].x/1000)) + 'k';
+  } else{
+    element['label'] = String(parseInt(res[i].x/1000)) + 'k-' + String(parseInt((res[i].x + res[i].dx)/1000)) + 'k';
+  }
+  element['count'] = res[i]['y']
+  prices.push(element);
+}
+
+  price_x.domain(prices.map(function(d) { return d.label; }));
+  price_y.domain([0, d3.max(prices, function(d) { return d.count; })]);
+
+
+
+  var price_bar = price_focus.selectAll("bar")
+      .data(prices)
+    .enter().append("rect")
+      .attr("x",  function(d) {return price_x(d.label)})
+        .attr("y", function(d, i) { 
+          return price_y(d.count) })
+      .attr("width",  price_x.rangeBand())
+      .style("fill", function(d, i){return pcolor[ pcolor.length - 1- i]})
+     .attr("height", function(d) { return price_height - price_y(d.count)})
+              .on('mouseover', function(d){
+      })
+              .on('mouseout', function(d){
+
+      });
+
+
+  price_focus.append("g")
+      .attr("class", "top x axis")
+      .attr("transform", "translate(0," + price_height + ")")
+      .call(price_xAxis);
+
+
+  price_focus.append("g")
+      .attr("class", "y axis")
+      .call(price_yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("");
+
+
+  sale_x.domain([0, Math.max.apply(Math,[sale_res[3]['value'], sale_res[4]['value']])]);
+  sale_y.domain([0, 5]);
+
+
+
+var sale_value = [{"value":sale_res[2]['value'], "rank":4, "text":"Low Estimate", "color":"#fc9272"}, {"value":sale_res[3]['value'], "rank":3, "text":"High Estimate", "color":"#fb6a4a"}, {"value":sale_res[4]['value'], "rank":0, "text":"Price", "color":"#de2d26"}];
+
+// console.log(sale_res);
+// 
+
+
+var sale_bars = sale_focus
+  .selectAll("bar")
+      .data(sale_value)
+      .enter().append("rect")
+    .attr("fill", function(d, i
+      ){
+      return d.color;
+    })
+      .attr("x",  0)
+        .attr("y", function(d, i) { return sale_y(d.rank + 1); })
+      .attr("width", function(d, i){ 
+        return sale_x(d.value); })
+     .attr("height", 20);
+
+var sale_text = sale_focus
+  .selectAll("text")
+      .data(sale_value)
+      .enter().append("text")
+    .attr("class", "sale text")
+      .attr("x",  -10)
+        .attr("y", function(d, i) { return sale_y(d.rank ) - 25; })
+      .attr("text-anchor", "end") 
+     .text(function(d, i){return d.text});
+
+
+
+
+  sale_focus.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + sale_height + ")")
+      .style("font-size", "10")
+      .call(sale_xAxis);
+
+var sale_number = sale_focus.append("text")
+      .attr("y", height/2)
+      .attr("x", 0)
+      .style("text-anchor", "start")
+      .style("font-size", "60px")
+      .style("stroke-width", '1px')
+      .style("fill", function(d, i){
+        if(sale_value[2]['value'] >= sale_value[1]['value']){
+          return "#08306b";
+        }
+        else if(sale_value[2]['value'] <= sale_value[0]['value']){
+          return "#67000d"
+        }
+        else{
+          return "black";
+        }
+
+      })
+      .text( function(d, i){
+        if(sale_value[2]['value'] >= sale_value[1]['value']){
+          return  "+" + parseInt((sale_value[2]['value'] - sale_value[1]['value'])/sale_value[1]['value'] * 100) + '%';
+        }else if (sale_value[2]['value'] <= sale_value[0]['value']){
+          return parseInt((sale_value[2]['value'] - sale_value[2]['value'])/sale_value[0]['value'] * 100) + '%';
+        }else{
+          return "Between";
+        }
+        } 
+        );
+// console.log(parseInt((sale_value[2]['value'] - sale_value[1]['value']) * 100) );
+
+var s_highs = [], s_lows = [], s_prices = [];
+
+for(i = 0; i < lots.length; i++){
+  s_highs.push({"number": lots[i]['estimate_high'], "rank":i});
+  s_lows.push({"number": lots[i]['estimate_low'], "rank":i});
+  s_prices.push({"number": lots[i]['price'], "rank":i});
+}
+
+
+s_highs.sort(function(a, b) {
+    return parseFloat(a.number) - parseFloat(b.number);
+});
+
+s_prices.sort(function(a, b) {
+    return parseFloat(a.number) - parseFloat(b.number);
+});
+
+s_lows.sort(function(a, b) {
+    return parseFloat(a.number) - parseFloat(b.number);
+});
+
+
+for(i = 0; i<s_prices.length; i++){
+  if( s_prices[i]['number'] != 0){
+    break;
+  }
+}
+s_prices = s_prices.slice(i, s_prices.length);
+
+for(i = 0; i<s_highs.length; i++){
+  if( s_highs[i]['number'] != 0){
+    break;
+  }
+}
+s_highs = s_highs.slice(i, s_highs.length);
+
+
+for(i = 0; i<s_lows.length; i++){
+  if( s_lows[i]['number'] != 0){
+    break;
+  }
+}
+s_lows = s_lows.slice(i, s_lows.length);
+
+
+
+var p_med = median(s_prices);
+
+var h_med = median(s_highs);
+var l_med = median(s_lows);
+
+
+
+  estimate_x.domain([ 0, Math.max.apply(Math,[s_highs[s_highs.length - 1]['number'], s_prices[s_prices.length - 1]['number']])]);
+  estimate_y.domain([0, 3]);
+
+
+
+var estimate_value = [
+  {"start":s_lows[0]['number'], "end":s_lows[s_lows.length -1]['number'], "rank":2, "text":"Low Estimate", "ocolor":"#fc9272", "median": l_med, "lcolor":"#6baed6"}, 
+  {"start":s_highs[0]['number'], "end":s_highs[s_highs.length -1]['number'], "rank":1, "text":"High Estimate", "ocolor":"#fb6a4a", "median": h_med, "lcolor":"#3182bd"},
+  {"start":s_prices[0]['number'], "end":s_prices[s_prices.length - 1]['number'], "rank":0, "text":"Price", "ocolor":"#de2d26", "median": p_med, "lcolor":"#08519c"}
+  ];
+
+
+
+
+
+var estimate_bars = estimate_focus
+  .selectAll("bar")
+      .data(estimate_value)
+      .enter().append("rect")
+    .attr("stroke", function(d, i
+      ){
+      return d.ocolor;
+    })
+    .attr("fill", "none")
+      .attr("x",  function(d, i) { return estimate_x(d.start); })
+        .attr("y", function(d, i) { return estimate_y(d.rank + 1); })
+      .attr("width", function(d, i){ 
+        return estimate_x(d.end) - estimate_x(d.start); })
+     .attr("height", 30);
+
+
+var estimate_text = estimate_focus
+  .selectAll("text")
+      .data(estimate_value)
+      .enter().append("text")
+    .attr("class", "sale text")
+      .attr("x",  -10)
+        .attr("y", function(d, i) { 
+          return estimate_y(d.rank ) - 40; })
+      .attr("text-anchor", "end") 
+     .text(function(d, i){
+      return d.text});
+
+var estimate_median = estimate_focus
+  .selectAll("line")
+      .data(estimate_value)
+      .enter().append("line")
+    .attr("stroke", function(d, i
+      ){
+      return d.lcolor;
+    })
+    .attr("stroke-width", 2)
+      .attr("x1",  function(d, i) { 
+        return estimate_x(d.median); })
+            .attr("x2",  function(d, i) { return estimate_x(d.median); })
+
+        .attr("y1", function(d, i) { return estimate_y(d.rank + 1); })
+      .attr("y2", function(d, i){ 
+        return estimate_y(d.rank + 1) + 30; });
+
+
+
+
+
+  estimate_focus.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + estimate_height + ")")
+      .style("font-size", "10")
+      .call(estimate_xAxis);
+
+
+
+
+
+function median(values) {
+
+
+    var half = Math.floor(values.length/2);
+
+    if(values.length % 2)
+        return values[half]['number'];
+    else
+        return (values[half-1]['number'] + values[half]['number']) / 2.0;
+}
+
+
+function getUnique(arr){
+
+	var counts = {}, 
+		numbers = [],
+		res = [],
+		sum = 0;
+
+	for(var i = 0; i< arr.length; i++) {
+   	 	var num = arr[i];
+    	counts[num] = counts[num] ? counts[num]+1 : 1;
+	}
+
+	var terms = Object.keys(counts);
+
+	for (var i = 0, len = terms.length; i < len; i++) {
+		
+		var val = {};
+		val['status'] = terms[i];
+		val['value'] = counts[terms[i]];
+		sum += counts[terms[i]];
+		res.push(val);
+	}
+
+	for (var i = 0, len = res.length; i < len; i++) {
+  		res[i]['value'] = res[i]['value']/parseFloat(sum);
+	}
+
+	return res;
+
+}
+
+
+function getPerformance(lots){
+
+	var res = [], values = {};
+	var bins = ['Above High Estimate', 'Within Estimates', 'Below Low Estimate', 'No Estimates', 'Unsold'];
+
+	for (var i = 0, len = bins.length; i < len; i++) {
+
+		values[bins[i]] = 0;
+	}
+
+	for (var i = 0, len = lots.length; i < len; i++) {
+		
+		if (lots[i]['price'] !== 0 && lots[i]['estimate_high'] !== 0 && lots[i]['price'] >  lots[i]['estimate_high']){
+			values['Above High Estimate']  += 1;
+		} 
+
+		else if(lots[i]['price'] !== 0 && lots[i]['estimate_low'] !== 0 && lots[i]['price'] <  lots[i]['estimate_low']){
+			values['Below Low Estimate'] += 1;
+		} 
+
+		else if (lots[i]['price'] !== 0 && lots[i]['estimate_low'] !== 0 && lots[i]['estimate_high'] !== '' && lots[i]['price'] >=  lots[i]['estimate_low'] && lots[i]['price'] <=  lots[i]['estimate_high']){
+			values['Within Estimates'] += 1;
+		}
+
+		else if(lots[i]['price'] == 0){
+			values['Unsold'] += 1;
+		}
+
+		else{
+			values['No Estimates'] += 1;	
+		}
+	}
+
+	var terms = Object.keys(values), sum = 0;
+
+	for (var i = 0, len = terms.length; i < len; i++) {
+		
+		var val = {};
+		val['status'] = terms[i];
+		val['value'] = values[terms[i]];
+		sum += values[terms[i]];
+		res.push(val);
+	}
+
+	return res;
+
+}
+
+function getPrices(lots){
+
+var values = [];
+
+for(i = 0; i < lots.length; i ++){
+  values.push(lots[i]['price']);
+}
+
+var bins = d3.layout.histogram()  // create layout object
+    .bins(5)       // to use 20 bins
+    .range([0, Math.max.apply(Math, values)])  // to cover range from 0 to 1
+    (values);          // group the data into the bins
+
+return bins;
+
+}
+
+function getSale(lots){
+
+	var approved = 0,
+		image = 0,
+		low_total = 0,
+		high_total = 0,
+		price_total = 0;
+	var result = [];
+
+	for (var i = 0, len = lots.length; i < len; i++) {
+
+		if (lots[i]['approved']){ approved += 1}
+		if (lots[i]['image']){ image += 1}
+		if (lots[i]['estimate_low'] !== ''){ low_total += lots[i]['estimate_low']}
+		if (lots[i]['estimate_high'] !== ''){ high_total += lots[i]['estimate_high']}
+		if (lots[i]['price'] !== ''){ price_total += lots[i]['price']}
+
+	}
+	
+	var terms = ['Approved', 'Images', 'Low Estimate', 'High Estimate', 'Price'];
+	var res = [approved, image, low_total, high_total, price_total];
+
+	for (var i = 0, len = terms.length; i < len; i++) {
+		
+		var val = {};
+		val['status'] = terms[i];
+		val['value'] = res[i];
+		result.push(val);
+	}
+
+	return result;
+
+}
+
+function getFlow(lots){
+
+	var low_estimate = [],
+		high_estimate = [],
+		price = [];
+
+	for (var i = 0, len = lots.length; i < len; i++) {
+
+
+		if (lots[i]['estimate_low'] !== '')
+			{ 
+				var term = {};
+				term['index'] = i + 1;
+				term['value'] = lots[i]['estimate_low'];
+				low_estimate.push(term)}
+		else{
+
+				var term = {};
+				term['index'] = i + 1;
+				term['value'] = 0;
+			low_estimate.push(term);
+		}
+
+		if (lots[i]['estimate_high'] !== '')
+			{ 
+
+				var term = {};
+				term['index'] = i + 1;
+				term['value'] = lots[i]['estimate_high'];
+				high_estimate.push(term)}
+		else{
+
+				var term = {};
+				term['index'] = i + 1;
+			term['value'] = 0;
+			high_estimate.push(term);			
+		}
+
+		if (lots[i]['price'] !== ''){ 
+
+				var term = {};
+				term['index'] = i + 1;
+				term['value'] = lots[i]['price'];
+			price.push(term)}
+		else{
+
+				var term = {};
+				term['index'] = i + 1;
+			term['value'] = 0;
+			price.push(term);
+		}
+	}
+
+	return [low_estimate, high_estimate, price];
+
+}
+
+function toCommas(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+// });
+
+</script>
+
+</body>
+</html>
