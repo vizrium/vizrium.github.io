@@ -1,0 +1,28 @@
+{
+"type": "FeatureCollection",
+                                                                                
+"features": [
+{ "type": "Feature", "properties": { "OBJECTID": 1, "NAME": "???", "CLASS": "0XFF83", "KIND": null, "id": 7 }, "geometry": { "type": "Point", "coordinates": [ 105.840037000007612, 32.437710989970242 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 2, "NAME": "???", "CLASS": "0XFF83", "KIND": null, "id": 17 }, "geometry": { "type": "Point", "coordinates": [ 106.740756999935684, 31.867239029957318 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 3, "NAME": "???", "CLASS": "0XFF83", "KIND": null, "id": 6 }, "geometry": { "type": "Point", "coordinates": [ 104.676576000282225, 31.469712000008823 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 4, "NAME": "?????????", "CLASS": "0XFF83", "KIND": null, "id": 20 }, "geometry": { "type": "Point", "coordinates": [ 102.222945999658222, 31.901525010271083 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 5, "NAME": "???", "CLASS": "0XFF83", "KIND": null, "id": 15 }, "geometry": { "type": "Point", "coordinates": [ 107.463507999994249, 31.210755990396706 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 6, "NAME": "???", "CLASS": "0XFF83", "KIND": null, "id": 11 }, "geometry": { "type": "Point", "coordinates": [ 106.106610000251351, 30.838437989821443 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 7, "NAME": "???", "CLASS": "0XFF83", "KIND": null, "id": 5 }, "geometry": { "type": "Point", "coordinates": [ 104.395220000003064, 31.12916400041831 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 8, "NAME": "???", "CLASS": "0XFF83", "KIND": null, "id": 14 }, "geometry": { "type": "Point", "coordinates": [ 106.629434999625573, 30.458767019782215 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 9, "NAME": "???", "CLASS": "0XFF83", "KIND": null, "id": 8 }, "geometry": { "type": "Point", "coordinates": [ 105.564707999774441, 30.52827998962988 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 10, "NAME": "???", "CLASS": "0XFF83", "KIND": null, "id": 18 }, "geometry": { "type": "Point", "coordinates": [ 104.625426000409661, 30.131576010224762 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 11, "NAME": "???", "CLASS": "0XFF83", "KIND": null, "id": 12 }, "geometry": { "type": "Point", "coordinates": [ 103.846377999645028, 30.078534030121432 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 12, "NAME": "???????", "CLASS": "0XFF83", "KIND": null, "id": 21 }, "geometry": { "type": "Point", "coordinates": [ 101.960917000319327, 30.052260990352465 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 13, "NAME": "???", "CLASS": "0XFF83", "KIND": null, "id": 9 }, "geometry": { "type": "Point", "coordinates": [ 105.05520699970333, 29.582792009843441 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 14, "NAME": "???", "CLASS": "0XFF83", "KIND": null, "id": 2 }, "geometry": { "type": "Point", "coordinates": [ 104.775736000016423, 29.342229959944746 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 15, "NAME": "???", "CLASS": "0XFF83", "KIND": null, "id": 10 }, "geometry": { "type": "Point", "coordinates": [ 103.763603000078419, 29.554784009674336 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 16, "NAME": "???", "CLASS": "0XFF83", "KIND": null, "id": 16 }, "geometry": { "type": "Point", "coordinates": [ 103.011375999602762, 29.983038989857558 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 17, "NAME": "???", "CLASS": "0XFF83", "KIND": null, "id": 4 }, "geometry": { "type": "Point", "coordinates": [ 105.438664000443339, 28.874807009935637 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 18, "NAME": "???", "CLASS": "0XFF83", "KIND": null, "id": 13 }, "geometry": { "type": "Point", "coordinates": [ 104.640657999567111, 28.755182040418902 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 19, "NAME": "???????", "CLASS": "0XFF83", "KIND": null, "id": 22 }, "geometry": { "type": "Point", "coordinates": [ 102.265781000093114, 27.885075989965003 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 20, "NAME": "????", "CLASS": "0XFF83", "KIND": null, "id": 3 }, "geometry": { "type": "Point", "coordinates": [ 101.716941999873427, 26.585766990254456 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 43, "NAME": "???", "CLASS": null, "KIND": "0XFF82", "id": 1 }, "geometry": { "type": "Point", "coordinates": [ 104.06217600022228, 30.660998009850346 ] } },
+{ "type": "Feature", "properties": { "OBJECTID": 50, "NAME": "???", "CLASS": null, "KIND": "0XFF82", "id": 19 }, "geometry": { "type": "Point", "coordinates": [ 106.524343700301571, 29.551265219714196 ] } }
+]
+}
