@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>100-Year Calendar</title>
+
+<style type="text/css">
+	#calendar {
+		width: 1200px;
+		height: 800px;
+	}
+
+	.calText {
+		font-family: Arial;
+	}
+
+	.year > .calText {
+		font-size: 2px;
+		font-weight: bold;
+	}
+
+	.monthLabel {
+		font-size: 4px;
+		font-weight: bold;
+	}
+
+	.day > .calText {
+		font-size: 1.25px;
+		fill: white;
+		text-anchor: middle;
+		font-weight: 900;
+	}
+
+/*	.future circle {
+		fill: lightgray;
+	}*/
+
+	.preFirstDay, .postLastDay, .nonLeapYear {
+		display: none;
+	}
+
+/*	.future circle, .year circle, .day circle {
+		fill: white;
+		stroke: black;
+		stroke-width: 0.1px;
+	}*/
+
+</style>
+
+</head>
+<body>
+
+<svg id='calendar'></svg>
+
+<script>
+
+birthday = prompt('Enter your birthday', '1980-01-01');
+birthday = birthday.split('-');
+
+if (birthday.length != 3) {
+	alert("Incorrect format. Using default birthday.");
+
+	var firstDay = 1,
+	firstMonth = 1,
+	firstYear = 1980;
+
+} else {
+
+	var firstDay = parseInt(birthday[2]),
+	firstMonth = parseInt(birthday[1]),
+	firstYear = parseInt(birthday[0]);
+
+}
+
+</script>
+
+<script src="d3.min.js" charset="utf-8"></script>
+<script src="compressed.js" charset="utf-8"></script>
+
+
+</body>
+</html>
